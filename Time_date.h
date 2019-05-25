@@ -58,10 +58,11 @@ class Time_date {
 		};
 	}
 
-	int TD[5] {0, 0, 0, 0, 0};
-	int a {5};
+	int TD[5]{ 0, 0, 0, 0, 0 };
+	int a{ 5 };
 	char signDate = '.';
-	
+	string Zero[4]{ "", "", "", "" };
+	string monthToString = "";
 
 public:
 	Time_date()
@@ -81,7 +82,7 @@ public:
 		TD[4] = Year;
 		Check();
 	};
-	 
+
 	Time_date Sum_time_date(Time_date Second);
 	Time_date_dif Dif_time_date(Time_date Second);
 	void toString(string Time_Date, string Format);
@@ -117,30 +118,127 @@ public:
 	operator int();
 
 
-
 };
-//////////////////////////
+//////////////////////////–õ–∞–±–æ—Ä–∞—Ç–æ—Ä–Ω–∞—è ‚Ññ5
+
+void Time_date::toString(string Time_Date, string Format)
+{
+	string sText = "";
+	char* ptr = &Time_Date.at(0);
+	while (*ptr != '\0')
+	{
+		while (*ptr != '.' && *ptr != '\0')
+		{
+			sText = sText + *ptr;
+			ptr++;
+		}
+		if (sText == "dd" and TD[2] < 10) Zero[2] = "0";
+		else if (sText == "MM" and TD[3] < 10) Zero[3] = "0";
+		else if (sText == "yy")
+		{
+			string forYear = to_string(TD[4]);
+			forYear.erase(0, 1);
+			TD[4] = stoul(forYear);
+		}
+		else if (sText == "InAWord")
+		{
+			if ((Format.find("GB") != string::npos))
+				switch (TD[3])
+				{
+				case 1:
+					monthToString = "January";
+					break;
+				case 2:
+					monthToString = "February";
+					break;
+				case 3:
+					monthToString = "March";
+					break;
+				case 4:
+					monthToString = "April";
+					break;
+				case 5:
+					monthToString = "May";
+					break;
+				case 6:
+					monthToString = "June";
+					break;
+				case 7:
+					monthToString = "July";
+					break;
+				case 8:
+					monthToString = "August";
+					break;
+				case 9:
+					monthToString = "September";
+					break;
+				case 10:
+					monthToString = "October";
+					break;
+				case 11:
+					monthToString = "November";
+				case 12:
+					monthToString = "December";
+					break;
+				}
+			else
+			{
+				switch (TD[3])
+				{
+				case 1:
+					monthToString = "–Ø–Ω–≤–∞—Ä—å";
+					break;
+				case 2:
+					monthToString = "–§–µ–≤—Ä–∞–ª—å";
+					break;
+				case 3:
+					monthToString = "–ú–∞—Ä—Ç";
+					break;
+				case 4:
+					monthToString = "–ê–ø—Ä–µ–ª—å";
+					break;
+				case 5:
+					monthToString = "–ú–∞–π";
+					break;
+				case 6:
+					monthToString = "–ò—é–Ω—å";
+					break;
+				case 7:
+					monthToString = "–ò—é–ª—å";
+					break;
+				case 8:
+					monthToString = "–ê–≤–≥—É—Å—Ç";
+					break;
+				case 9:
+					monthToString = "–°–µ–Ω—Ç—è–±—Ä—å";
+					break;
+				case 10:
+					monthToString = "–û–∫—Ç—è–±—Ä—å";
+					break;
+				case 11:
+					monthToString = "–ù–æ—è–±—Ä—å";
+				case 12:
+					monthToString = "–î–µ–∫–∞–±—Ä—å";
+					break;
+				}
+			}
+		}
+		sText.clear();
+		if (*ptr != '\0') ptr++;
+	}
+}
 
 Time_date Time_date::parse(string Time_Date, string Format)
 {
 	Time_date forReturn;
 	string sText = "";
 	if ((Format.find("12h") != string::npos) and (Time_Date.find("pm") != string::npos)) forReturn.TD[1] += 12;
-	if (Format.find("GB") != string::npos) forReturn.toString(Time_Date, sText = "GB");
-	else if (Format.find("IE") != string::npos) forReturn.toString(Time_Date, sText = "IE");
-	else forReturn.toString(Time_Date, sText = "RUS");
-	return forReturn;
-}
-
-void Time_date::toString(string Time_Date, string Format)
-{
-	if (Format == "IE") signDate = '-';
-	else if (Format == "GB") signDate = '/';
+	if (Format.find("GB") != string::npos) forReturn.signDate = '/';
+	else if (Format.find("IE") != string::npos) forReturn.signDate = '-';
 	char* ptr = &Time_Date.at(0);
-	string sText = "";
 	int countPoints = 0;
 	while (*ptr != '\0') {
-		while ((*ptr != signDate) && (*ptr != ' ') &&(*ptr != '\0') && *ptr != ':')
+		while ((*ptr != forReturn.signDate) && (*ptr != ' ') &&(*ptr != '\0') && *ptr != ':')
 		{
 			sText = sText + *ptr;
 			ptr++;
@@ -153,19 +251,19 @@ void Time_date::toString(string Time_Date, string Format)
 		switch (countPoints)
 		{
 		case 1:
-			TD[1] += stoul(sText);
+			forReturn.TD[1] += stoul(sText);
 			break;
 		case 2:
-			TD[0] += stoul(sText);
+			forReturn.TD[0] += stoul(sText);
 			break;
 		case 3:
-			TD[2] += stoul(sText);
+			forReturn.TD[2] += stoul(sText);
 			break;
 		case 4:
-			TD[3] += stoul(sText);
+			forReturn.TD[3] += stoul(sText);
 			break;
 		case 5:
-			TD[4] += stoul(sText);
+			forReturn.TD[4] += stoul(sText);
 			break;
 		}
 		there:
@@ -173,6 +271,7 @@ void Time_date::toString(string Time_Date, string Format)
 			if (*ptr != '\0') ptr++;
 
 	};
+	return forReturn;
 }
 
 Time_date::operator int() {
@@ -209,7 +308,13 @@ int Time_date::operator[](Part_time_date First) {
 }
 
 ostream& operator<<(ostream& out, Time_date& First) {
-	out << First.Hour() << ":" << First.Minutes() << endl << First.Day() << First.signDate << First.Month() << First.signDate << First.Year() << endl;
+	if (First.TD[0] < 10) First.Zero[0] = "0";
+	if (First.TD[1] < 10) First.Zero[1] = "0";
+	out << First.Zero[1] << First.Hour() << ":" << First.Zero[0] << First.Minutes() << endl << First.Zero[2]
+		<< First.Day() << First.signDate << First.Zero[3];
+	if (First.monthToString != "") out << First.monthToString;
+	else out << First.Month();
+	out << First.signDate << First.Year() << endl;
 	return out;
 }
 
@@ -273,8 +378,8 @@ Time_date_dif Time_date::operator-(Time_date Second) {
 	int Difference[8]{ 60, 24, 28, 12, 10000, 29, 30, 31 };
 	for (int i = 0; i < 5; i++) {
 		int j = i;
-		if (i == 2) { //ÒÍÓÎ¸ÍÓ ‰ÌÂÈ ‚ ÏÂÒˇˆÂ?
-			if (TD[3] == 3) {//ÔÓ‚ÂÍ‡ „Ó‰‡ Ì‡ ‚ËÒÓÍÓÒÚÌÓÒÚ¸
+		if (i == 2) { //—Å–∫–æ–ª—å–∫–æ –¥–Ω–µ–π –≤ –º–µ—Å—è—Ü–µ?
+			if (TD[3] == 3) {//–ø—Ä–æ–≤–µ—Ä–∫–∞ –≥–æ–¥–∞ –Ω–∞ –≤–∏—Å–æ–∫–æ—Å—Ç–Ω–æ—Å—Ç—å
 				if ((TD[4] % 400 == 0) or ((TD[4] % 4 == 0) and !(TD[4] % 100 == 100))) {
 					j = 5;
 				}
@@ -304,8 +409,8 @@ Time_date Time_date::operator+(Time_date Second) {
 	int Roole[8]{ 60, 24, 28, 12, 10000, 29, 30, 31 };
 	for (int i = 0; i < 5; i++) {
 		int j = i;
-		if (i == 2) { //ÒÍÓÎ¸ÍÓ ‰ÌÂÈ ‚ ÏÂÒˇˆÂ?
-			if (TD[3] == 2) {//ÔÓ‚ÂÍ‡ „Ó‰‡ Ì‡ ‚ËÒÓÍÓÒÚÌÓÒÚ¸
+		if (i == 2) { //—Å–∫–æ–ª—å–∫–æ –¥–Ω–µ–π –≤ –º–µ—Å—è—Ü–µ?
+			if (TD[3] == 2) {//–ø—Ä–æ–≤–µ—Ä–∫–∞ –≥–æ–¥–∞ –Ω–∞ –≤–∏—Å–æ–∫–æ—Å—Ç–Ω–æ—Å—Ç—å
 				if ((TD[4] % 400 == 0) or ((TD[4] % 4 == 0) and !(TD[4] % 100 == 100))) {
 					j = 5;
 				}
@@ -339,8 +444,8 @@ Time_date Time_date::operator+=(Time_date Second) {
 	int Roole[8]{ 60, 24, 28, 12, 10000, 29, 30, 31 };
 	for (int i = 0; i < 5; i++) {
 		int j = i;
-		if (i == 2) { //ÒÍÓÎ¸ÍÓ ‰ÌÂÈ ‚ ÏÂÒˇˆÂ?
-			if (TD[3] == 2) {//ÔÓ‚ÂÍ‡ „Ó‰‡ Ì‡ ‚ËÒÓÍÓÒÚÌÓÒÚ¸
+		if (i == 2) { //—Å–∫–æ–ª—å–∫–æ –¥–Ω–µ–π –≤ –º–µ—Å—è—Ü–µ?
+			if (TD[3] == 2) {//–ø—Ä–æ–≤–µ—Ä–∫–∞ –≥–æ–¥–∞ –Ω–∞ –≤–∏—Å–æ–∫–æ—Å—Ç–Ω–æ—Å—Ç—å
 				if ((TD[4] % 400 == 0) or ((TD[4] % 4 == 0) and !(TD[4] % 100 == 100))) {
 					j = 5;
 				}
@@ -363,8 +468,8 @@ Time_date Time_date::operator+=(Time_date Second) {
 void Time_date::Sum(Part_time_date i, int Digit) {
 	int Roole[8]{ 60, 24, 28, 12, 10000, 29, 30, 31 };
 	int j = i;
-	if (i == 2) { //ÒÍÓÎ¸ÍÓ ‰ÌÂÈ ‚ ÏÂÒˇˆÂ?
-		if (TD[3] == 2) {//ÔÓ‚ÂÍ‡ „Ó‰‡ Ì‡ ‚ËÒÓÍÓÒÚÌÓÒÚ¸
+	if (i == 2) { //—Å–∫–æ–ª—å–∫–æ –¥–Ω–µ–π –≤ –º–µ—Å—è—Ü–µ?
+		if (TD[3] == 2) {//–ø—Ä–æ–≤–µ—Ä–∫–∞ –≥–æ–¥–∞ –Ω–∞ –≤–∏—Å–æ–∫–æ—Å—Ç–Ω–æ—Å—Ç—å
 			if ((TD[4] % 400 == 0) or ((TD[4] % 4 == 0) and !(TD[4] % 100 == 100))) {
 				j = 5;
 			}
@@ -387,8 +492,8 @@ Time_date_dif Time_date::Dif_time_date(Time_date Second) {
 	int Difference[8]{ 60, 24, 28, 12, 10000, 29, 30, 31 };
 	for (int i = 0; i < 5; i++) {
 		int j = i;
-		if (i == 2) { //ÒÍÓÎ¸ÍÓ ‰ÌÂÈ ‚ ÏÂÒˇˆÂ?
-			if (TD[3] == 2) {//ÔÓ‚ÂÍ‡ „Ó‰‡ Ì‡ ‚ËÒÓÍÓÒÚÌÓÒÚ¸
+		if (i == 2) { //—Å–∫–æ–ª—å–∫–æ –¥–Ω–µ–π –≤ –º–µ—Å—è—Ü–µ?
+			if (TD[3] == 2) {//–ø—Ä–æ–≤–µ—Ä–∫–∞ –≥–æ–¥–∞ –Ω–∞ –≤–∏—Å–æ–∫–æ—Å—Ç–Ω–æ—Å—Ç—å
 				if ((TD[4] % 400 == 0) or ((TD[4] % 4 == 0) and !(TD[4] % 100 == 100))) {
 					j = 5;
 				}
@@ -415,13 +520,15 @@ Time_date_dif Time_date::Dif_time_date(Time_date Second) {
 
 }
 
+
+
 Time_date Time_date::Sum_time_date(Time_date Second) {
 	Time_date Sum(0, 0, 0, 0, 0);
 	int Roole[8]{ 60, 24, 28, 12, 10000, 29, 30, 31 };
 	for (int i = 0; i < 5; i++) {
 		int j = i;
-		if (i == 2) { //ÒÍÓÎ¸ÍÓ ‰ÌÂÈ ‚ ÏÂÒˇˆÂ?
-			if (TD[3] == 2) {//ÔÓ‚ÂÍ‡ „Ó‰‡ Ì‡ ‚ËÒÓÍÓÒÚÌÓÒÚ¸
+		if (i == 2) { //—Å–∫–æ–ª—å–∫–æ –¥–Ω–µ–π –≤ –º–µ—Å—è—Ü–µ?
+			if (TD[3] == 2) {//–ø—Ä–æ–≤–µ—Ä–∫–∞ –≥–æ–¥–∞ –Ω–∞ –≤–∏—Å–æ–∫–æ—Å—Ç–Ω–æ—Å—Ç—å
 				if ((TD[4] % 400 == 0) or ((TD[4] % 4 == 0) and !(TD[4] % 100 == 100))) {
 					j = 5;
 				}
