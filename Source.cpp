@@ -18,8 +18,15 @@ enum weekday
 int main()
 {
 	setlocale(LC_ALL, "RUS");
-	Time_date a = Time_date::parse("21:35 25-05-2019", "IE-24h");
+	Time_date a;
+	a = Time_date::parse("01:00 05-05-2019", "IE-24h");
+	a.toString("d.M.yy", "RUS");
+	cout << a << endl;
 	a.toString("dd.InAWord.yyyy","RUS");
+	cout << a << endl;
+	a.toString("dd.MM.yyyy", "GB");
+	cout << a << endl;
+	a.toString("dd.InAWord.yy", "GB");
 	cout << a << endl;
 	system("PAUSE");
 	return 0;
