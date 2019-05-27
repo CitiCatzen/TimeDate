@@ -63,6 +63,7 @@ class Time_date {
 	char signDate = '.';
 	string Zero[4]{ "", "", "", "" };
 	string monthToString = "";
+	int endYear = 0;
 
 public:
 	Time_date()
@@ -123,7 +124,10 @@ public:
 
 void Time_date::toString(string Time_Date, string Format)
 {
+	monthToString = "", Zero[2] = "", Zero[3] = "", endYear = 0;
 	string sText = "";
+	string monthGB[12]{ "January", "February", "March", "April", "May", "June", "July", "August",  "September", "October","November",  "December" };
+	string monthRUS[12]{ "Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь" };
 	char* ptr = &Time_Date.at(0);
 	while (*ptr != '\0')
 	{
@@ -132,96 +136,18 @@ void Time_date::toString(string Time_Date, string Format)
 			sText = sText + *ptr;
 			ptr++;
 		}
-		if (sText == "dd" and TD[2] < 10) Zero[2] = "0";
-		else if (sText == "MM" and TD[3] < 10) Zero[3] = "0";
+		if (sText == "dd" and TD[2] < 10) Zero[2] = '0';
+		else if (sText == "MM" and TD[3] < 10) Zero[3] = '0';
 		else if (sText == "yy")
 		{
 			string forYear = to_string(TD[4]);
 			forYear.erase(0, 1);
-			TD[4] = stoul(forYear);
+			endYear = stoul(forYear);
 		}
 		else if (sText == "InAWord")
 		{
-			if ((Format.find("GB") != string::npos))
-				switch (TD[3])
-				{
-				case 1:
-					monthToString = "January";
-					break;
-				case 2:
-					monthToString = "February";
-					break;
-				case 3:
-					monthToString = "March";
-					break;
-				case 4:
-					monthToString = "April";
-					break;
-				case 5:
-					monthToString = "May";
-					break;
-				case 6:
-					monthToString = "June";
-					break;
-				case 7:
-					monthToString = "July";
-					break;
-				case 8:
-					monthToString = "August";
-					break;
-				case 9:
-					monthToString = "September";
-					break;
-				case 10:
-					monthToString = "October";
-					break;
-				case 11:
-					monthToString = "November";
-				case 12:
-					monthToString = "December";
-					break;
-				}
-			else
-			{
-				switch (TD[3])
-				{
-				case 1:
-					monthToString = "Январь";
-					break;
-				case 2:
-					monthToString = "Февраль";
-					break;
-				case 3:
-					monthToString = "Март";
-					break;
-				case 4:
-					monthToString = "Апрель";
-					break;
-				case 5:
-					monthToString = "Май";
-					break;
-				case 6:
-					monthToString = "Июнь";
-					break;
-				case 7:
-					monthToString = "Июль";
-					break;
-				case 8:
-					monthToString = "Август";
-					break;
-				case 9:
-					monthToString = "Сентябрь";
-					break;
-				case 10:
-					monthToString = "Октябрь";
-					break;
-				case 11:
-					monthToString = "Ноябрь";
-				case 12:
-					monthToString = "Декабрь";
-					break;
-				}
-			}
+			if ((Format.find("GB") != string::npos)) monthToString = monthGB[TD[3] - 1];
+			else monthToString = monthRUS[TD[3] - 1];
 		}
 		sText.clear();
 		if (*ptr != '\0') ptr++;
@@ -312,9 +238,11 @@ ostream& operator<<(ostream& out, Time_date& First) {
 	if (First.TD[1] < 10) First.Zero[1] = "0";
 	out << First.Zero[1] << First.Hour() << ":" << First.Zero[0] << First.Minutes() << endl << First.Zero[2]
 		<< First.Day() << First.signDate << First.Zero[3];
-	if (First.monthToString != "") out << First.monthToString;
+	if (First.monthToString != "" ) out << First.monthToString;
 	else out << First.Month();
-	out << First.signDate << First.Year() << endl;
+	out << First.signDate;
+	if (First.endYear != 0) out << First.endYear << endl;
+	else out << First.Year() << endl;
 	return out;
 }
 
@@ -578,6 +506,10 @@ inline T& myStack<T>::top()
 {
 	return head->data;
 }
+
+
+
+
 
 
 
